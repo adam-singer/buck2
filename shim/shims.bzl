@@ -298,7 +298,8 @@ def rust_protobuf_library(
         build_env = None,
         deps = [],
         test_deps = None,
-        doctests = True):
+        doctests = True,
+        rustc_flags = ["-L/nix/store/0rsh55ighfv3fxidf3xz8vl3abiika0i-libiconv-99/lib"]):
     if build_env:
         build_env = {
             k: _fix_dep_in_string(v)
@@ -316,6 +317,7 @@ def rust_protobuf_library(
             "fbsource//third-party/rust:tonic-build",
             "//buck2/app/buck2_protoc_dev:buck2_protoc_dev",
         ],
+        rustc_flags = rustc_flags,
     )
 
     build_env = build_env or {}
@@ -349,6 +351,7 @@ def rust_protobuf_library(
             "fbsource//third-party/rust:prost",
             "fbsource//third-party/rust:prost-types",
         ] + (deps or []),
+        rustc_flags = rustc_flags,
     )
 
 def ocaml_binary(

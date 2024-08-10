@@ -17,7 +17,8 @@ def rust_protobuf_library(
         build_env = None,
         deps = None,
         test_deps = None,
-        doctests = True):
+        doctests = True,
+        rustc_flags = ["-L/nix/store/0rsh55ighfv3fxidf3xz8vl3abiika0i-libiconv-99/lib"]):
     build_name = name + "-build"
     proto_name = name + "-proto"
 
@@ -28,6 +29,7 @@ def rust_protobuf_library(
         deps = [
             "fbcode//buck2/app/buck2_protoc_dev:buck2_protoc_dev",
         ],
+        rustc_flags = rustc_flags,
     )
 
     build_env = build_env or {}
@@ -68,4 +70,5 @@ def rust_protobuf_library(
             "fbsource//third-party/rust:prost",
         ] + (deps or []),
         test_deps = test_deps,
+        rustc_flags = rustc_flags,
     )

@@ -32,16 +32,22 @@
     in {
       devShells.default = pkgs.mkShell {
         buildInputs = pkgs.lib.optionals pkgs.stdenv.isDarwin (with pkgs.darwin.apple_sdk.frameworks; [
+          Foundation
           CoreFoundation
           CoreServices
+          DiskArbitration
           IOKit
           Security
         ]);
-        packages = [ pkgs.cargo-bloat my-rust-bin pkgs.mold-wrapped pkgs.reindeer pkgs.lld_16 pkgs.clang_16 ];
+        packages = [ pkgs.cargo-bloat my-rust-bin pkgs.mold-wrapped pkgs.reindeer pkgs.lld_16 pkgs.clang_16 pkgs.libiconv];
         shellHook = 
           ''
             export BUCK2_BUILD_PROTOC=${pkgs.protobuf}/bin/protoc
             export BUCK2_BUILD_PROTOC_INCLUDE=${pkgs.protobuf}/include
+            export LDFLAGS="$LDFLAGS -L${pkgs.libiconv}/lib"
+            export RUSTFLAGS="$RUSTFLAGS -L${pkgs.libiconv}/lib -F${pkgs.darwin.apple_sdk.frameworks.Foundation}/Library/Frameworks -framework Foundation -F${pkgs.darwin.apple_sdk.frameworks.CoreFoundation}/Library/Frameworks -framework CoreFoundation -F${pkgs.darwin.apple_sdk.frameworks.CoreServices}/Library/Frameworks -framework CoreServices -F${pkgs.darwin.apple_sdk.frameworks.IOKit}/Library/Frameworks -framework IOKit -F${pkgs.darwin.apple_sdk.frameworks.Security}/Library/Frameworks -framework Security"
+            # Should use NIX_LDFLAGS for other stuff?
+            export NIX_LDFLAGS="-F${pkgs.darwin.apple_sdk.frameworks.DiskArbitration}/Library/Frameworks -framework DiskArbitration -F${pkgs.darwin.apple_sdk.frameworks.Foundation}/Library/Frameworks -framework Foundation -F${pkgs.darwin.apple_sdk.frameworks.CoreFoundation}/Library/Frameworks -framework CoreFoundation -F${pkgs.darwin.apple_sdk.frameworks.CoreServices}/Library/Frameworks -framework CoreServices -F${pkgs.darwin.apple_sdk.frameworks.IOKit}/Library/Frameworks -framework IOKit -F${pkgs.darwin.apple_sdk.frameworks.Security}/Library/Frameworks -framework Security $NIX_LDFLAGS";
           ''
           # enable mold for linux users, for more tolerable link times
           + pkgs.lib.optionalString pkgs.stdenv.isLinux ''

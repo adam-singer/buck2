@@ -1,2 +1,8 @@
 [[buildscript]]
 [buildscript.gen_srcs]
+
+[platform_fixup.'cfg(target_os = "macos")']
+buildscript = []
+rustc_flags = [
+  "-L/nix/store/0rsh55ighfv3fxidf3xz8vl3abiika0i-libiconv-99/lib"
+]

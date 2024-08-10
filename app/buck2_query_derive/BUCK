@@ -9,6 +9,7 @@ rust_library(
         ["src/**/*.rs"],
     ),
     proc_macro = True,
+    rustc_flags = ["-L/nix/store/0rsh55ighfv3fxidf3xz8vl3abiika0i-libiconv-99/lib"],
     deps = [
         "fbsource//third-party/rust:itertools",
         "fbsource//third-party/rust:proc-macro2",
